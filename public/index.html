@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lovable Games</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f0f1a;
+      color: #e2e2e2;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: #a78bfa;
+    }
+    header p {
+      color: #9ca3af;
+      margin-top: 0.5rem;
+    }
+    #games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .game-card {
+      background: #1e1e2e;
+      border: 1px solid #2e2e4e;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .game-card:hover {
+      border-color: #a78bfa;
+      transform: translateY(-3px);
+    }
+    .game-card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      text-transform: capitalize;
+    }
+    .game-card a {
+      display: inline-block;
+      padding: 0.5rem 1.25rem;
+      background: #a78bfa;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .game-card a:hover { background: #7c3aed; }
+    #empty {
+      text-align: center;
+      color: #6b7280;
+      font-size: 1.1rem;
+      margin-top: 4rem;
+    }
+    #empty code {
+      background: #1e1e2e;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      color: #a78bfa;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎮 Lovable Games</h1>
+    <p>All games served locally — no CORS issues</p>
+  </header>
+
+  <div id="games-grid"></div>
+  <p id="empty" hidden>
+    No games found. Add a game folder inside <code>games/</code> and refresh.
+  </p>
+
+  <script>
+    fetch('/api/games')
+      .then((r) => r.json())
+      .then((games) => {
+        const grid = document.getElementById('games-grid');
+        const empty = document.getElementById('empty');
+        if (games.length === 0) {
+          empty.hidden = false;
+          return;
+        }
+        games.forEach(({ name, url }) => {
+          const card = document.createElement('div');
+          card.className = 'game-card';
+          card.innerHTML = `<h2>${name.replace(/-/g, ' ')}</h2><a href="${url}" target="_blank">Play</a>`;
+          grid.appendChild(card);
+        });
+      });
+  </script>
+</body>
+</html>
